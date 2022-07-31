@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<robot name="diff_robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- Robot body in another xacro-->
+
+    <xacro:include filename="robot_body.xacro" />
+
+
+</robot>
