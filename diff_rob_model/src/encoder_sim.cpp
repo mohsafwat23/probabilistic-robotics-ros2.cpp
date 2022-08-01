@@ -114,7 +114,7 @@ class EncoderPublisher : public rclcpp::Node
             }
             else
             {
-                RCLCPP_INFO(this->get_logger(), "I heard: '%i'", encoder_fault);
+                //RCLCPP_INFO(this->get_logger(), "I heard: '%i'", encoder_fault);
                 message.x = 0.0;
                 message.y = 0.0;
                 enc_pub->publish(message);

@@ -33,18 +33,21 @@ add_executable(enc_sim src/encoder_sim.cpp)
 add_executable(land_cam src/landmark_cam.cpp)
 add_executable(com_vel src/command_vel.cpp)
 add_executable(traj src/traj.cpp)
+add_executable(ekf_loc src/ekf_loc.cpp)
 
 
 ament_target_dependencies(enc_sim rclcpp geometry_msgs tf2_msgs)
 ament_target_dependencies(land_cam rclcpp std_msgs geometry_msgs cv_bridge OpenCV image_transport sensor_msgs diff_rob_msgs)
 ament_target_dependencies(com_vel rclcpp geometry_msgs)
 ament_target_dependencies(traj rclcpp nav_msgs geometry_msgs)
+ament_target_dependencies(ekf_loc rclcpp geometry_msgs nav_msgs diff_rob_msgs)
 
 install(TARGETS
   enc_sim
   land_cam
   com_vel
   traj
+  ekf_loc
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)

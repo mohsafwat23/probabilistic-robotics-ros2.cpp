@@ -64,8 +64,8 @@ class LandmarkPublisher: public rclcpp::Node
                     float angle = std::atan2(x, z); //check this! for robot heading
                    
                     message.id.data = id;
-                    message.x.data = dist;
-                    message.z.data = angle;
+                    message.x.data = x;
+                    message.z.data = z;
 
                     //double x = tvec[0];
                     //RCLCPP_INFO(this->get_logger(), "Publishing: '%f'", dist);
