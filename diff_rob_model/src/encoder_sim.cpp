@@ -9,6 +9,7 @@
 #include "tf2/LinearMath/Matrix3x3.h"
 #include <tf2/LinearMath/Quaternion.h>
 #include <random>
+#include "diff_rob_msgs/msg/encoder.hpp"
 
 using std::placeholders::_1;
 float pi = 3.14159265359;
@@ -25,8 +26,8 @@ class EncoderPublisher : public rclcpp::Node
     std::string r_wheel = "drivewhl_r_link";
     float d_enc_l = 0.0;
     float d_enc_r = 0.0;
-    float ti_l = 0;
-    float ti_r = 0;
+    double ti_l = 0;
+    double ti_r = 0;
     tf2::Quaternion q0_l, q0_inv_l, q_l;
     tf2::Quaternion q0_r, q0_inv_r, q_r;
 
@@ -34,14 +35,17 @@ class EncoderPublisher : public rclcpp::Node
         EncoderPublisher() : Node("encoder_node") //constructor
         {
         wheel_state_sub = this->create_subscription<tf2_msgs::msg::TFMessage>("/tf", 5, std::bind(&EncoderPublisher::angle_callback, this, _1));
-        enc_pub = this->create_publisher<geometry_msgs::msg::Point>("/encoder", 10);
+        //enc_pub = this->create_publisher<geometry_msgs::msg::Point>("/encoder", 10);
+        enc_pub = this->create_publisher<diff_rob_msgs::msg::Encoder>("/encoder", 10);
+
         }
 
 
     private:
         void angle_callback(const tf2_msgs::msg::TFMessage::SharedPtr msg)
         {
-            auto message = geometry_msgs::msg::Point();
+            //auto message = geometry_msgs::msg::Point();
+            auto message = diff_rob_msgs::msg::Encoder();
             int size = msg->transforms.size();  ///sizeof(msg->transforms[0]);
 
             //simulate an encoder skipping counts
@@ -53,13 +57,13 @@ class EncoderPublisher : public rclcpp::Node
                     wheel = msg->transforms[i].child_frame_id;
                     if(wheel == l_wheel)
                     {
-                        float tf_l = float(msg->transforms[i].header.stamp.sec) + float(msg->transforms[i].header.stamp.nanosec)*1e-9;
+                        double tf_l = float(msg->transforms[i].header.stamp.sec) + float(msg->transforms[i].header.stamp.nanosec)*1e-9;
                         // q.w() = msg->transforms[i].transform.rotation.w;
                         // q.x() = msg->transforms[i].transform.rotation.x;
                         // q.y() = msg->transforms[i].transform.rotation.y;
                         // q.z() = msg->transforms[i].transform.rotation.z;                    
                         //auto euler = q.toRotationMatrix().eulerAngles(0, 1, 2);
-                        float dt_l = tf_l - ti_l;
+                        double dt_l = tf_l - ti_l;
                         // Orientation quaternion
                         tf2::Quaternion q1_l(
                                     msg->transforms[i].transform.rotation.x,
@@ -79,14 +83,14 @@ class EncoderPublisher : public rclcpp::Node
                         q0_l = q1_l;
                         ti_l = tf_l;
 
-                        //RCLCPP_INFO(this->get_logger(), "I heard: '%f'", d_enc_l);
+                        //RCLCPP_INFO(this->get_logger(), "I heard: '%f'", tf_l);
 
                     }
                     wheel = msg->transforms[i].child_frame_id;
                     if (wheel == r_wheel)
                     {
-                        float tf_r = float(msg->transforms[i].header.stamp.sec) + float(msg->transforms[i].header.stamp.nanosec)*1e-9;
-                        float dt_r = tf_r- ti_r;
+                        double tf_r = double(msg->transforms[i].header.stamp.sec) + double(msg->transforms[i].header.stamp.nanosec)*1e-9;
+                        double dt_r = tf_r- ti_r;
                         // Orientation quaternion
                         tf2::Quaternion q1_r(
                                     msg->transforms[i].transform.rotation.x,
@@ -106,8 +110,11 @@ class EncoderPublisher : public rclcpp::Node
                         q0_r = q1_r;
                         ti_r = tf_r;
                     }
-                    message.x = d_enc_l;
-                    message.y = d_enc_r;
+                    message.stamp = this->get_clock()->now();
+                    message.enc_l.data = d_enc_l;
+                    message.enc_r.data = d_enc_r;
+                    // message.x = d_enc_l;
+                    // message.y = d_enc_r;
                     enc_pub->publish(message);
                 }
 
@@ -115,15 +122,17 @@ class EncoderPublisher : public rclcpp::Node
             else
             {
                 //RCLCPP_INFO(this->get_logger(), "I heard: '%i'", encoder_fault);
-                message.x = 0.0;
-                message.y = 0.0;
+                message.stamp = this->get_clock()->now();
+                message.enc_l.data = 0.0;
+                message.enc_r.data = 0.0;
                 enc_pub->publish(message);
             }
 
         }
 
         rclcpp::Subscription<tf2_msgs::msg::TFMessage>::SharedPtr wheel_state_sub;
-        rclcpp::Publisher<geometry_msgs::msg::Point>::SharedPtr enc_pub;
+        //rclcpp::Publisher<geometry_msgs::msg::Point>::SharedPtr enc_pub;
+        rclcpp::Publisher<diff_rob_msgs::msg::Encoder>::SharedPtr enc_pub;
 
 
 };

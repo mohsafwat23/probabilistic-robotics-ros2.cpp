@@ -44,6 +44,12 @@ def generate_launch_description():
         executable='enc_sim',
         name='encoders',
     )
+    ekf_node = launch_ros.actions.Node(
+        package='diff_rob_model',
+        executable='ekf_loc',
+        name='params',
+        parameters=[yaml_path]
+    )
     # joint_state_publisher_node = launch_ros.actions.Node(
     #     package='joint_state_publisher',
     #     executable='joint_state_publisher',
@@ -91,5 +97,6 @@ def generate_launch_description():
         cam_node,
         markers_node,
         encoders_node,
-        rviz_node
+        rviz_node,
+        ekf_node
     ])

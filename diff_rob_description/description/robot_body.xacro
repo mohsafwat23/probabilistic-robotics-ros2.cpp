@@ -33,7 +33,7 @@
         </geometry>
       </collision>
 
-      <xacro:box_inertia m="15" w="${base_width}" d="${base_length}" h="${base_height}"/>
+      <xacro:box_inertia m="1" w="${base_width}" d="${base_length}" h="${base_height}"/>
     </link>
 
     <!-- Robot Footprint -->
@@ -64,7 +64,7 @@
         </geometry>
       </collision>
 
-      <xacro:cylinder_inertia m="0.5" r="${wheel_radius}" h="${wheel_width}"/>
+      <xacro:cylinder_inertia m="0.2" r="${wheel_radius}" h="${wheel_width}"/>
     </link>
 
     <joint name="${prefix}_joint" type="continuous">
@@ -105,7 +105,7 @@
       </surface>
     </collision>
 
-    <xacro:sphere_inertia m="0.5" r="${(wheel_radius+wheel_zoff-(base_height/2))}"/>
+    <xacro:sphere_inertia m="0.2" r="${(wheel_radius+wheel_zoff-(base_height/2))}"/>
   </link>
 
   <joint name="caster_joint" type="fixed">

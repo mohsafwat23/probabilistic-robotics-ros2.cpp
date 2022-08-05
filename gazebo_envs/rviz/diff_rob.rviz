@@ -12,6 +12,7 @@ Panels:
         - /TF1/Frames1
         - /Marker1
         - /Marker1/Topic1
+        - /Path2
       Splitter Ratio: 0.5
     Tree Height: 1628
   - Class: rviz_common/Selection
@@ -178,6 +179,33 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /landmark_markers
       Value: true
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz_default_plugins/Path
+      Color: 239; 41; 41
+      Enabled: true
+      Head Diameter: 0.30000001192092896
+      Head Length: 0.20000000298023224
+      Length: 0.30000001192092896
+      Line Style: Lines
+      Line Width: 0.029999999329447746
+      Name: Path
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Color: 255; 85; 255
+      Pose Style: None
+      Radius: 0.029999999329447746
+      Shaft Diameter: 0.10000000149011612
+      Shaft Length: 0.10000000149011612
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /pose_estimate
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -221,25 +249,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 19.848371505737305
+      Distance: 7.584799289703369
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -3.767954111099243
-        Y: 0.676194965839386
-        Z: 0.669164776802063
+        X: -2.186086893081665
+        Y: 1.0009899139404297
+        Z: 0.6056455969810486
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.375398188829422
+      Pitch: 0.4503982365131378
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 4.9303998947143555
+      Yaw: 4.555398941040039
     Saved: ~
 Window Geometry:
   Displays:
