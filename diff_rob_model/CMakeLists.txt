@@ -27,6 +27,7 @@ find_package(OpenCV REQUIRED)
 find_package(image_transport REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(diff_rob_msgs REQUIRED)
+find_package(visualization_msgs REQUIRED)
 
 
 add_executable(enc_sim src/encoder_sim.cpp)
@@ -40,7 +41,7 @@ ament_target_dependencies(enc_sim rclcpp geometry_msgs tf2_msgs diff_rob_msgs)
 ament_target_dependencies(land_cam rclcpp std_msgs geometry_msgs cv_bridge OpenCV image_transport sensor_msgs diff_rob_msgs)
 ament_target_dependencies(com_vel rclcpp geometry_msgs)
 ament_target_dependencies(traj rclcpp nav_msgs geometry_msgs)
-ament_target_dependencies(ekf_loc rclcpp geometry_msgs nav_msgs diff_rob_msgs)
+ament_target_dependencies(ekf_loc rclcpp geometry_msgs nav_msgs diff_rob_msgs visualization_msgs)
 
 install(TARGETS
   enc_sim

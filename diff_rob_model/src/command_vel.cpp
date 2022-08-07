@@ -30,8 +30,8 @@ class VelPublisher : public rclcpp::Node
         message.angular.z = 0.0;
       } 
       else {
-        message.linear.x = 0.2; // m/s
-        message.angular.z = 0.05; // rad/s
+        message.linear.x = 0.3; // m/s
+        message.angular.z = 0.3; // rad/s
       }
       count_++;    
       vel_publisher->publish(message);

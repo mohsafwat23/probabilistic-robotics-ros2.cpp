@@ -22,15 +22,20 @@ find_package(visualization_msgs REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
+include_directories(include)
 
 add_executable(rviz_markers src/rviz_markers.cpp)
+#add_executable(landmarks_node src/landmarks_node.cpp src/landmarks.cpp)
 
 
 ament_target_dependencies(rviz_markers rclcpp visualization_msgs)
+#ament_target_dependencies(landmarks_node rclcpp)
 
 install(TARGETS
+  #landmarks_node
   rviz_markers
-  DESTINATION lib/${PROJECT_NAME})
+  DESTINATION lib/${PROJECT_NAME}
+)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -43,8 +48,15 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-ament_package()
+install(
+  DIRECTORY include/
+  DESTINATION include
+)
+
 
 install(DIRECTORY models launch rviz world config
   DESTINATION share/${PROJECT_NAME}
-  )
+)
+
+ament_package()
+

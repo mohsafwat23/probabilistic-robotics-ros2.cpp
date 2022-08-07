@@ -13,10 +13,14 @@
 #include "nav_msgs/msg/path.hpp"
 #include "geometry_msgs/msg/pose_stamped.hpp"
 #include "diff_rob_msgs/msg/encoder.hpp"
+#include "visualization_msgs/msg/marker.hpp"
+#include "tf2/LinearMath/Quaternion.h"
 #include <math.h>
 
 using std::placeholders::_1;
 using namespace std::chrono_literals;
+const double pi = 3.14159265359;
+
 
 const int SIZE = 12;
 
@@ -29,6 +33,7 @@ class EKFlocalization : public rclcpp::Node //inherits from Node
         
             landmark_cam_sub = this->create_subscription<std_msgs::msg::Float32MultiArray>("/landmark_dist", 10, std::bind(&EKFlocalization::cam_callback, this, _1));
             pose_estimate_pub = this->create_publisher<nav_msgs::msg::Path>("/pose_estimate", 10);
+            marker_pub = this->create_publisher<visualization_msgs::msg::Marker>("/robot_pose_estimate", 10);
             timer = this->create_wall_timer(50ms, std::bind(&EKFlocalization::publisher_callback, this));
 
             //Declare Parameters
@@ -52,6 +57,10 @@ class EKFlocalization : public rclcpp::Node //inherits from Node
                 state(1) += sin(state(2))*dt*((u_enc(0)+u_enc(1))/2.0);
                 //theta
                 state(2) += dt*((u_enc(1)-u_enc(0))/Width);
+                //state(2) += atan2(sin(dt*((u_enc(1)-u_enc(0))/Width)), cos(dt*((u_enc(1)-u_enc(0))/Width))) ;
+
+                //this handles angle wrapping
+                state(2) = atan2(sin(state(2)), cos(state(2)));
 
                 //motion model Jacobian
                 J_fx << 1.0, 0.0, -sin(state(2))*dt*((u_enc(0)+u_enc(1))/2.0),
@@ -66,7 +75,6 @@ class EKFlocalization : public rclcpp::Node //inherits from Node
                 //prior covariance 
                 sigma = J_fx*sigma*J_fx.transpose() + J_fu*Q*J_fu.transpose();
                 
-                // RCLCPP_INFO(this->get_logger(), "sigma1: '%f'", sigma(0,0));
                 // RCLCPP_INFO(this->get_logger(), "sigma2: '%f'", sigma(1,1));
                 // RCLCPP_INFO(this->get_logger(), "sigma3: '%f'", sigma(2,2));
             }
@@ -118,6 +126,13 @@ class EKFlocalization : public rclcpp::Node //inherits from Node
                     measurement_hat(0) = sqrt(q);       
                     //angle predicted measurement
                     measurement_hat(1) = atan2((y_lm-state(1)), (x_lm-state(0))) - state(2); 
+                    
+                    //this handles angle wrapping
+                    measurement_hat(1) = atan2(sin(measurement_hat(1)), cos(measurement_hat(1)));
+
+                    RCLCPP_INFO(this->get_logger(), "id: '%i'", id_aruco);
+                    //RCLCPP_INFO(this->get_logger(), "sigma1: '%f'", measurement_hat(1)*180./3.14159);
+
 
                     //Observation jacobian
                     J_H <<  (state(0)-x_lm)/measurement_hat(0), (state(1)- y_lm)/measurement_hat(0), 0.0,
@@ -179,7 +194,13 @@ class EKFlocalization : public rclcpp::Node //inherits from Node
             predict();
             //belief
             update();
+            //convert euler to quat
+            quat.setRPY(0.0, 0.0, state(2));
+            quat = quat.normalize();
             auto message = geometry_msgs::msg::Pose();
+            visualization_msgs::msg::Marker marker;
+
+
             message.position.x = state(0);
             message.position.y = state(1);
             //x = msg->pose.pose.position.x;
@@ -195,6 +216,28 @@ class EKFlocalization : public rclcpp::Node //inherits from Node
             path.header.stamp = now;
             path.header.frame_id = frameid;     //relative to ...
             path.poses = poses_vec;
+            marker.header.frame_id = frameid;
+            marker.header.stamp = now;
+            marker.ns = "robot_marker";
+            marker.id = 1;
+            marker.type = visualization_msgs::msg::Marker::ARROW;//::Marker::SPHERE;
+            //marker.action = visualization_msgs::msg::Marker::DELETE;
+            marker.scale.x = 0.8;
+            marker.scale.y = 0.05;
+            marker.scale.z = 0.05;
+            marker.color.a = 1.0; // Don't forget to set the alpha!
+            marker.color.r = 1.0;
+            marker.color.g = 0.0;
+            marker.color.b = 0.0;
+            marker.pose.position.x = state(0);
+            marker.pose.position.y = state(1);
+            marker.pose.position.z = 0.0;
+            marker.pose.orientation.w = quat.w();
+            marker.pose.orientation.x = quat.x();
+            marker.pose.orientation.y = quat.y();
+            marker.pose.orientation.z = quat.z();
+
+            marker_pub->publish(marker);
             pose_estimate_pub->publish(path);
 
         }
@@ -206,7 +249,7 @@ class EKFlocalization : public rclcpp::Node //inherits from Node
         //declaring class variables
         std::string frameid = "odom";
         Eigen::Vector2d u_enc;    //enc_l, enc_r
-        Eigen::Vector3d state=Eigen::Vector3d::Zero();    //x,y,theta
+        Eigen::Vector3d state=Eigen::Vector3d::Random();    //x,y,theta
         Eigen::Vector2d measurement;    //measurement
         Eigen::Vector2d measurement_hat;    //predicted measurement
         //Eigen::Matrix3d sigma; 
@@ -215,7 +258,7 @@ class EKFlocalization : public rclcpp::Node //inherits from Node
         //Eigen::Matrix2d Q;
         Eigen::Matrix2d Q = (Eigen::Matrix2d() << 0.1*0.1,0.0,0.0,0.1*0.1).finished();      //process noise covariance
         //Todo: measurement noise changes with distance from landmark
-        Eigen::Matrix2d R = (Eigen::Matrix2d() << 0.2*0.2,0.0,0.0,0.2*0.2).finished();      //Measurement noise
+        Eigen::Matrix2d R = (Eigen::Matrix2d() << 0.2*0.2,0.0,0.0,0.1*0.1).finished();      //Measurement noise
         Eigen::Matrix3d I = Eigen::Matrix3d::Identity();
         Eigen::Matrix3d J_fx; //motion Jacobian
         Eigen::Matrix<double, 3,2> J_fu; //controls Jacobian
@@ -236,12 +279,15 @@ class EKFlocalization : public rclcpp::Node //inherits from Node
         float d_enc_r;
         double tf;
         int vec_size;
+        tf2::Quaternion quat;
+
 
         //ROS stuff
         std::vector<geometry_msgs::msg::PoseStamped> poses_vec;
         rclcpp::Subscription<diff_rob_msgs::msg::Encoder>::SharedPtr enc_sub;
         rclcpp::Subscription<std_msgs::msg::Float32MultiArray>::SharedPtr landmark_cam_sub;
         rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr pose_estimate_pub;
+        rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr marker_pub;
         rclcpp::TimerBase::SharedPtr timer;
 };
 

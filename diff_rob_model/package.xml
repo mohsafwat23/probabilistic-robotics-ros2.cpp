@@ -21,6 +21,8 @@
   <depend>image_transport</depend>
   <depend>sensor_msgs</depend>
   <depend>diff_rob_msgs</depend>
+  <depend>visualization_msgs</depend>
+
 
 
   <export>

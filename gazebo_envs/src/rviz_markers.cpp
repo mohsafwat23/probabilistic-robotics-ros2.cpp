@@ -4,6 +4,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "visualization_msgs/msg/marker.hpp"
 #include "tf2/LinearMath/Quaternion.h"
+//#include "landmarks.hpp"
 
 using namespace std::chrono_literals;
 
@@ -14,7 +15,6 @@ class MarkerPublisher: public rclcpp::Node
     public:
     MarkerPublisher() : Node("marker_node")
     {
-
         // //Declare Parameters
         for(int i=0; i<12; i++)
         {
