@@ -46,7 +46,7 @@ def generate_launch_description():
     )
     ekf_node = launch_ros.actions.Node(
         package='diff_rob_model',
-        executable='ekf_loc',
+        executable='ekf_node',
         name='params',
         parameters=[yaml_path]
     )

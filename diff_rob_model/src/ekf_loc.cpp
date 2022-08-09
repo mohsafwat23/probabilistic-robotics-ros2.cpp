@@ -27,14 +27,14 @@ const int SIZE = 12;
 class EKFlocalization : public rclcpp::Node //inherits from Node
 {
     public:
-        EKFlocalization() : Node("ekf_node")    //declaring the constructors
+        EKFlocalization() : Node("ekf_loc_node")    //declaring the constructors
         {
             enc_sub = this->create_subscription<diff_rob_msgs::msg::Encoder>("/encoder", 10, std::bind(&EKFlocalization::encoder_callback, this, _1));
         
             landmark_cam_sub = this->create_subscription<std_msgs::msg::Float32MultiArray>("/landmark_dist", 10, std::bind(&EKFlocalization::cam_callback, this, _1));
             pose_estimate_pub = this->create_publisher<nav_msgs::msg::Path>("/pose_estimate", 10);
             marker_pub = this->create_publisher<visualization_msgs::msg::Marker>("/robot_pose_estimate", 10);
-            timer = this->create_wall_timer(50ms, std::bind(&EKFlocalization::publisher_callback, this));
+            timer = this->create_wall_timer(20ms, std::bind(&EKFlocalization::publisher_callback, this));
 
             //Declare Parameters
             for(int i=0; i<12; i++)
@@ -249,7 +249,7 @@ class EKFlocalization : public rclcpp::Node //inherits from Node
         //declaring class variables
         std::string frameid = "odom";
         Eigen::Vector2d u_enc;    //enc_l, enc_r
-        Eigen::Vector3d state=Eigen::Vector3d::Random();    //x,y,theta
+        Eigen::Vector3d state=Eigen::Vector3d::Zero();    //x,y,theta
         Eigen::Vector2d measurement;    //measurement
         Eigen::Vector2d measurement_hat;    //predicted measurement
         //Eigen::Matrix3d sigma; 
