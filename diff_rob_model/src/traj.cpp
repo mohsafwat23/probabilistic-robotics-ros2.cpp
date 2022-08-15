@@ -24,10 +24,7 @@ class TrajVisPublisher: public rclcpp::Node
         real_path_pub = this->create_publisher<nav_msgs::msg::Path>("/actual_path", 10);
     }
 
-    ~TrajVisPublisher()
-    {
 
-    }
     private:
         void odom_callback(const nav_msgs::msg::Odometry::SharedPtr msg)
         {

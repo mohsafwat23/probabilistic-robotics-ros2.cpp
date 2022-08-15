@@ -50,6 +50,12 @@ def generate_launch_description():
         name='params',
         parameters=[yaml_path]
     )
+    pf_node = launch_ros.actions.Node(
+        package='diff_rob_model',
+        executable='pf_node',
+        name='params',
+        parameters=[yaml_path]
+    )
     # joint_state_publisher_node = launch_ros.actions.Node(
     #     package='joint_state_publisher',
     #     executable='joint_state_publisher',
@@ -98,5 +104,6 @@ def generate_launch_description():
         markers_node,
         encoders_node,
         rviz_node,
-        ekf_node
+        pf_node
+        #ekf_node
     ])

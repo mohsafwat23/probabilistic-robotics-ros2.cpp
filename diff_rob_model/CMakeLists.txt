@@ -37,6 +37,7 @@ add_executable(com_vel src/command_vel.cpp)
 add_executable(traj src/traj.cpp)
 add_executable(ekf_loc src/ekf_loc.cpp)
 add_executable(ekf_node src/ekf_node.cpp src/ekf.cpp)
+add_executable(pf_node src/pf_node.cpp src/pf.cpp)
 
 
 ament_target_dependencies(enc_sim rclcpp geometry_msgs tf2_msgs diff_rob_msgs)
@@ -45,7 +46,7 @@ ament_target_dependencies(com_vel rclcpp geometry_msgs)
 ament_target_dependencies(traj rclcpp nav_msgs geometry_msgs)
 ament_target_dependencies(ekf_loc rclcpp geometry_msgs nav_msgs diff_rob_msgs visualization_msgs)
 ament_target_dependencies(ekf_node rclcpp geometry_msgs nav_msgs diff_rob_msgs visualization_msgs)
-
+ament_target_dependencies(pf_node rclcpp geometry_msgs nav_msgs diff_rob_msgs visualization_msgs)
 
 install(TARGETS
   enc_sim
@@ -54,6 +55,7 @@ install(TARGETS
   traj
   ekf_loc
   ekf_node
+  pf_node
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
