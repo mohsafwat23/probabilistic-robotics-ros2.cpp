@@ -34,6 +34,6 @@ endif()
 
 ament_package()
 
-install(DIRECTORY description launch rviz
+install(DIRECTORY description launch
   DESTINATION share/${PROJECT_NAME}
   )
