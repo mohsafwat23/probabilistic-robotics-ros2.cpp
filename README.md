@@ -6,6 +6,7 @@
 
 #### Gazebo and CV bridge install
 `sudo apt install gazebo11 libgazebo11 libgazebo11-dev`
+
 `sudo apt install ros-foxy-gazebo-ros-pkgs ros-foxy-cv-bridge`
 
 
@@ -19,6 +20,9 @@
 #### Commands ####
 #### Build
 `colcon build --symlink-install`
+
+#### Source the workspace 
+`source install/setup.bash`
 
 #### Run the particle filter
 `ros2 launch gazebo_envs robot.launch.py`
