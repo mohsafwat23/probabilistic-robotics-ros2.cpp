@@ -1,11 +1,12 @@
 # probabilistic-robots-
 
-#### Installs #### :
+## Installs :
 #### Joint State publisher and Xacro
 `sudo apt install ros-foxy-xacro ros-foxy-joint-state-publisher-gui`
 
 #### Gazebo and CV bridge install
 `sudo apt install gazebo11 libgazebo11 libgazebo11-dev`
+
 `sudo apt install ros-foxy-gazebo-ros-pkgs ros-foxy-cv-bridge`
 
 
