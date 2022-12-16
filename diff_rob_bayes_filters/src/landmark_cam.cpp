@@ -14,7 +14,6 @@
 #include "diff_rob_msgs/msg/landmark.hpp"
 #include "std_msgs/msg/multi_array_dimension.hpp"
 #include "std_msgs/msg/float32_multi_array.hpp"
-//#include "diff_rob_model/msg/landmark.hpp"
 //#include "image_transport/image_transport.h"
 //#include <opencv2/highgui/highgui.hpp>
 

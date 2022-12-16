@@ -23,12 +23,12 @@ def generate_launch_description():
         parameters=[{'robot_description': Command(['xacro ', LaunchConfiguration('model')]), 'use_sim_time': True}]
     )
     robot_path = launch_ros.actions.Node(
-        package='diff_rob_model',
+        package='diff_rob_bayes_filters',
         executable='traj',
         name='traj'
     )
     cam_node = launch_ros.actions.Node(
-        package='diff_rob_model',
+        package='diff_rob_bayes_filters',
         executable='land_cam',
         name='land_cam',
         parameters=[yaml_path]
@@ -40,18 +40,18 @@ def generate_launch_description():
         parameters=[yaml_path]
     )
     encoders_node = launch_ros.actions.Node(
-        package='diff_rob_model',
+        package='diff_rob_bayes_filters',
         executable='enc_sim',
         name='encoders',
     )
     ekf_node = launch_ros.actions.Node(
-        package='diff_rob_model',
+        package='diff_rob_bayes_filters',
         executable='ekf_node',
         name='params',
         parameters=[yaml_path]
     )
     pf_node = launch_ros.actions.Node(
-        package='diff_rob_model',
+        package='diff_rob_bayes_filters',
         executable='pf_node',
         name='params',
         parameters=[yaml_path]

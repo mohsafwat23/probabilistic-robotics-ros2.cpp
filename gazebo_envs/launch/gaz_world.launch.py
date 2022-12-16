@@ -10,7 +10,7 @@ def generate_launch_description():
 
 
     # cam_node = launch_ros.actions.Node(
-    #     package='diff_rob_model',
+    #     package='diff_rob_bayes_filters',
     #     executable='land_cam',
     #     name='params_aruco',
     #     parameters=[yaml_path]
