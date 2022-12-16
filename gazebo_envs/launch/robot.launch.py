@@ -104,6 +104,6 @@ def generate_launch_description():
         markers_node,
         encoders_node,
         rviz_node,
-        pf_node
-        #ekf_node
+        #pf_node
+        ekf_node
     ])

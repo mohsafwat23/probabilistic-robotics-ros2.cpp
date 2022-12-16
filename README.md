@@ -1,4 +1,6 @@
-# probabilistic-robots-
+# Bayesian filters for mobile robot localization
+
+![Alt Text](/assets/particle_filter.png)
 
 ## Installs :
 #### Joint State publisher and Xacro
