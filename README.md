@@ -1,6 +1,6 @@
 # probabilistic-robots-
 
-#### Installs ####:
+#### Installs #### :
 #### Joint State publisher and Xacro
 `sudo apt install ros-foxy-xacro ros-foxy-joint-state-publisher-gui`
 
