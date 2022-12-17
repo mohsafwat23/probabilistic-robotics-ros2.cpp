@@ -23,6 +23,9 @@
 #### Build
 `colcon build --symlink-install`
 
+#### Source the workspace 
+`source install/setup.bash`
+
 #### Run the particle filter
 `ros2 launch gazebo_envs robot.launch.py`
 
